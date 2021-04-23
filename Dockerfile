@@ -15,8 +15,15 @@ RUN apt update && \
     apt install -y curl && \
     curl -L -O https://github.com/microsoft/ApplicationInsights-Java/releases/download/3.0.0-PREVIEW.3/applicationinsights-agent-3.0.0-PREVIEW.3.jar
 
+#ssh
+RUN apt-get update \
+      && apt-get install -y --no-install-recommends openssh-server \
+      && echo "root:Docker!" | chpasswd
+
+COPY sshd_config /etc/ssh/
+
 # Expose the ports we're interested in
-EXPOSE 8080
+EXPOSE 8080 2222 80
 
 # Make Java 8 obey container resource limits, improve performance
 ENV JAVA_OPTS='-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -Djava.awt.headless=true'
